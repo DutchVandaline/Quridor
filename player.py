@@ -107,9 +107,24 @@ class Player:
 
 
     def evaluate_board(self, board_state):
-        if self.board.is_finish():
-            return float('inf') if self.board.pawn[0][0] >= self.board.rows-1 else float('-inf')
-        return 0
+        #board_state를 받아서 현재 위치 저장
+        if self.pawn == 1:
+            current_position = board_state.pawn[0]
+        elif self.pawn == 2:
+            current_position = board_state.pawn[1]
+        else:
+            raise ValueError("Error")
+
+        start = tuple(current_position) #BFS에서 오류가 발생하여 넣은 tuple 함수
+        end = (board_state.rows - 1, current_position[1]) #BFS를 사용하기 위한 수정
+
+        path_length = BFS(board_state.maze, start, end)
+
+        if board_state.is_finish():
+            return float('inf') if current_position[0] >= board_state.rows - 1 else float('-inf')
+        else:
+            return -path_length
+
 
     def move(self, direction):
         res = self.board.move_player(direction, self.pawn)
